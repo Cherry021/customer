@@ -1,0 +1,22 @@
+pipeline{
+    agent{
+        label "node"
+    }
+    stages{
+        stage("sonar quality check"){
+            agent {
+                docker {
+                    image "openjdk:11"
+                }
+            }
+            steps{
+                script{
+                    withSonarQubeEnv(credentialsId: 'sonar-password') {
+                        sh 'chmod +x mvnw'
+                        sh 'mvnw sonarqube'
+                    }
+                }
+            }
+        }
+    }
+}
