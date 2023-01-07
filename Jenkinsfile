@@ -5,7 +5,6 @@ pipeline{
             agent {
                 docker {
                     image "openjdk:11"
-                    image "maven:3.3.9"
                 }
             }
             steps{
