@@ -1,11 +1,6 @@
 pipeline{
     agent any
     stages{
-        stage('build'){
-            withMaven(maven: 'mvn') {
-                sh "mvn clean package"
-            }
-        }
         stage("sonar quality check"){
             agent {
                 docker {
@@ -15,8 +10,9 @@ pipeline{
             steps{
                 script{
                     withSonarQubeEnv(credentialsId: 'sonar-password') {
-                        sh 'chmod +x mvn'
-                        sh 'mvn sonarqube'
+                        def mvnHome = tool name: 'Apache Maven 3.6.3', type: 'maven'
+                        sh 'chmod +x ${mvnHome}/bin/mvn'
+                        sh '${mvnHome}/bin/mvn sonarqube'
                     }
                 }
             }
