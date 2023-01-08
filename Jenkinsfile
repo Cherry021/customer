@@ -4,6 +4,11 @@ pipeline{
         PATH = "/usr/share/maven/bin:$PATH"
     }
     stages{
+        stage("build code"){
+            steps{
+                sh "mvn clean install"
+            }
+        }
         stage("sonar quality check"){
             agent {
                 docker {
