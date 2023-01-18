@@ -12,7 +12,6 @@ pipeline{
                             docker build -t 34.136.85.102:8083/springapp:${VERSION} .
                             docker login -u admin -p $nexus_password http://34.136.85.102:8083
                             docker push 34.136.85.102:8083/springapp:${VERSION}
-                            docker rmi 34.136.85.102:8083/springapp:${VERSION}
                         '''
                     }
                 }
