@@ -1,10 +1,10 @@
 FROM maven as build
 WORKDIR /app
-CD . . 
+RUN CD . . 
 RUN mvn install
 
 FROM openjdk:11 as base
 WORKDIR /app
-CD --from=build /app/target/Customer-0.0.1-SNAPSHOT.jar .
+RUN CD --from=build /app/target/Customer-0.0.1-SNAPSHOT.jar .
 EXPOSE 8089
 CMD ["java","-jar","Customer-0.0.1-SNAPSHOT.jar"]
