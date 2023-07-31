@@ -29,8 +29,7 @@ pipeline{
         stage('Static Code Analysis'){
             steps{
                 scripts{
-                    def credentialsId = 'sonar-pass'
-                    staticCodeAnalysis(credentialsId)
+                    staticCodeAnalysis('sonar-pass')
                 }
             }
         }
