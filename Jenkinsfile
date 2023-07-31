@@ -27,7 +27,9 @@ pipeline{
             }
         }
         stage('Static Code Analysis'){
-            staticCodeAnalysis()
+            steps{
+                staticCodeAnalysis()
+            }
         }
     }
 }
