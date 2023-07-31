@@ -28,9 +28,7 @@ pipeline{
         }
         stage('Static Code Analysis'){
             steps{
-                scripts{
                     staticCodeAnalysis('sonar-pass')
-                }
             }
         }
     }
