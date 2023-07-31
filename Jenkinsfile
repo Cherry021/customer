@@ -31,5 +31,10 @@ pipeline{
                     staticCodeAnalysis('sonar-pass')
             }
         }
+        stage('Quality Code Analysis'){
+            steps{
+                    qualityGateTest('sonar-pass')
+            }
+        }
     }
 }
