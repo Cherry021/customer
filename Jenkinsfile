@@ -2,6 +2,9 @@
 
 pipeline{
     agent any
+    parameters{
+        choice(name:'Action',choices:'create\nvalidate',description:'Choose any Action')
+    }
     stages{
         stage('Git Checkout'){
             steps{
@@ -14,9 +17,17 @@ pipeline{
             }
         }
         stage('Integration Tests'){
+            when{
+                expression{
+                    params.Action == 'create'
+                }
+            }
             steps{
                 mavenIntTest()
             }
+        }
+        stage('Static Code Analysis'){
+            staticCodeAnalysis()
         }
     }
 }
