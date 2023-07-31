@@ -28,7 +28,8 @@ pipeline{
         }
         stage('Static Code Analysis'){
             steps{
-                staticCodeAnalysis()
+                def credentialsId = 'sonar-pass'
+                staticCodeAnalysis(credentialsId)
             }
         }
     }
