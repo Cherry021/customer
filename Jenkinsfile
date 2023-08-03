@@ -15,7 +15,7 @@ pipeline{
         }
         stage("Sonar Testing"){
             steps{
-                sonarTetsing()
+                sonarTesting()
             }
         }
         stage("Build"){
