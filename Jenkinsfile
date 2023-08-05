@@ -38,5 +38,10 @@ pipeline{
                 dockerBuild("${params.UserDetails}","${params.ImageName}","${params.ImageTag}")
             }
         }
+        stage('Docker Build Scan'){
+            steps{
+                dockerImageScan("${params.UserDetails}","${params.ImageName}","${params.ImageTag}")
+            }
+        }
     }
 }
