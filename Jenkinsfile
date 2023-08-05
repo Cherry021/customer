@@ -43,5 +43,10 @@ pipeline{
                 dockerImageScan("${params.UserDetails}","${params.ImageName}","${params.ImageTag}")
             }
         }
+        stage('Docker Image Push'){
+            steps{
+                dockerImagePush("${params.UserDetails}","${params.ImageName}","${params.ImageTag}")
+            }
+        }
     }
 }
