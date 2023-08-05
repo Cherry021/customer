@@ -18,6 +18,11 @@ pipeline{
                 sonarCheck()
             }
         }
+        stage('Quality Status'){
+            steps{
+                qualityStatus()
+            }
+        }
         stage('Build'){
             steps{
                 mavenBuild()
