@@ -28,17 +28,17 @@ pipeline{
         stage("Build Docker Image"){
             steps{
                 script{
-                    myImage = docker.build("ch20140270/customer:${env.BUILD_ID}")
+                    myimage = docker.build("ch20140270/customer:${env.BUILD_ID}")
                 }
             }
         }
         stage("Push Docker Image"){
             steps{
                 script{
-                    withCredentials([string(credentialsId:'docker-hub-login',variable:'dockerhub')]){
+                    withCredentials([string(credentialsId:'dockerhub',variable:'dockerhub')]){
                         sh "docker login -u ch20140270 -p ${dockerhub}"
                     }
-                    myImage.push("${env.BUILD_ID}")
+                    myimage.push("${env.BUILD_ID}")
                 }
             }
         }
