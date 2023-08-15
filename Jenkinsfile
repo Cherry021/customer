@@ -1,6 +1,6 @@
 pipeline{
     agent any
-    tols{
+    tools{
         maven "Maven"
     }
     environment{
