@@ -1,51 +1,69 @@
-@Library('lol-pipeline-library') _
-
 pipeline{
     agent any
-    parameters{
-        string(name:'UserDetails',description:'User Details',defaultValue:'ch20140270')
-        string(name:'ImageName',description:'Name of Image',defaultValue:'customer')
-        string(name:'ImageTag',description:'Name of Image Tag',defaultValue:'v1')
+    tols{
+        maven "Maven"
     }
-    stages(){
-        stage('Git Checkout'){
+    environment{
+        PROJECT_ID = 'storied-cider-394305'
+        CLUSTER_NAME = 'cherryk8s' 
+        LOCATION = 'us-central1-c'
+        CREDENTIALS_ID = 'kubernetes'
+    }
+    stages{
+        stage("Git Checkout"){
             steps{
-                gitCheckout()
+                checkout scm
             }
         }
-        stage('Tesing'){
+        stage("Build"){
             steps{
-                mavenTest()
+                sh "mvn clean package"
             }
         }
-        stage('Sonar Testing'){
+        stage("Test"){
             steps{
-                sonarCheck()
+                sh "mvn test"
             }
         }
-        stage('Quality Status'){
+        stage("Build Docker Image"){
             steps{
-                qualityStatus()
+                script{
+                    myImage = docker.build("ch20140270/customer:${env.BUILD_ID}")
+                }
             }
         }
-        stage('Build'){
+        stage("Push Docker Image"){
             steps{
-                mavenBuild()
+                script{
+                    withCredentials([string(credentialsId:'docker-hub-login',variable:'dockerhub')]){
+                        sh "docker login -u ch20140270 -p ${dockerhub}"
+                    }
+                    myImage.push("${env.BUILD_ID}")
+                }
             }
         }
-        stage('Docker Build'){
+        stage("Deploy"){
             steps{
-                dockerBuild("${params.UserDetails}","${params.ImageName}","${params.ImageTag}")
-            }
-        }
-        stage('Docker Build Scan'){
-            steps{
-                dockerImageScan("${params.UserDetails}","${params.ImageName}","${params.ImageTag}")
-            }
-        }
-        stage('Docker Image Push'){
-            steps{
-                dockerImagePush("${params.UserDetails}","${params.ImageName}","${params.ImageTag}")
+                sh "sed -i 's/tagversion/${env.BUILD_ID}/g' service.yaml"
+                sh "sed -i 's/tagversion/${env.BUILD_ID}/g' deploy.yaml"
+                step([
+                    $class: 'KubernetesEngineBuilder',
+                    projectId: env.PROJECT_ID,
+                    clusterName: env.CLUSTER_NAME,
+                    location: env.LOCATION,
+                    manifestPattern: 'service.yaml',
+                    credentialsId: env.CREDENTIAL_ID,
+                    verifyDeployment: true
+                ])
+                step([
+                    $class: 'KubernetesEngineBuilder',
+                    projectId: env.PROJECT_ID,
+                    clusterName: env.CLUSTER_NAME,
+                    location: env.LOCATION,
+                    manifestPattern: 'deploy.yaml',
+                    credentialsId: env.CREDENTIAL_ID,
+                    verifyDeployment: true
+                ])
             }
         }
     }

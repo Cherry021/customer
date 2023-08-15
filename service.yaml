@@ -1,0 +1,34 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: load-balancer-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: load-balancer-app
+  template:
+    metadata:
+      labels:
+        app: load-balancer-app
+    spec:
+      containers:
+      - name: load-balancer-app
+        image: ch20140270/customer:tagversion
+        ports:
+        - containerPort: 8443
+
+---
+
+kind: Service
+apiVersion: v1
+metadata:
+  name:  load-balancer-app
+spec:
+  selector:
+    app:  load-balancer-app
+  type:  LoadBalancer
+  ports:
+  - name:  TCP
+    port:  80
+    targetPort:  8443
