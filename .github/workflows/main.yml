@@ -1,0 +1,22 @@
+on:
+  push:
+    branches:
+    - main
+  workflow_dispatch:
+
+jobs:
+  build:
+    name: set the machine
+    runs-on: ubuntu-18.04
+
+    steps:
+      - uses: actions/chechout@v2
+
+      - name: Run a one-line script
+        run: echo Hello world!
+
+      - name: Run a multiline script
+        run: |
+          echo Add other action to build
+          echo test and deploy your project
+          
