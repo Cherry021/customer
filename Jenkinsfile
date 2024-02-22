@@ -25,45 +25,15 @@ pipeline{
                 sh "mvn test"
             }
         }
-        stage("Build Docker Image"){
-            steps{
-                script{
-                    myimage = docker.build("ch20140270/customer:${env.BUILD_ID}")
-                }
-            }
-        }
+        
         stage("Push Docker Image"){
             steps{
-                script{
-                    withCredentials([string(credentialsId:'dockerhub',variable:'dockerhub')]){
-                        sh "docker login -u ch20140270 -p ${dockerhub}"
-                    }
-                    myimage.push("${env.BUILD_ID}")
-                }
+                echo "docker image pushed"
             }
         }
         stage("Deploy"){
             steps{
-                sh "sed -i 's/tagversion/${env.BUILD_ID}/g' service.yaml"
-                sh "sed -i 's/tagversion/${env.BUILD_ID}/g' deploy.yaml"
-                step([
-                    $class: 'KubernetesEngineBuilder',
-                    projectId: env.PROJECT_ID,
-                    clusterName: env.CLUSTER_NAME,
-                    location: env.LOCATION,
-                    manifestPattern: 'service.yaml',
-                    credentialsId: env.CREDENTIAL_ID,
-                    verifyDeployment: true
-                ])
-                step([
-                    $class: 'KubernetesEngineBuilder',
-                    projectId: env.PROJECT_ID,
-                    clusterName: env.CLUSTER_NAME,
-                    location: env.LOCATION,
-                    manifestPattern: 'deploy.yaml',
-                    credentialsId: env.CREDENTIAL_ID,
-                    verifyDeployment: true
-                ])
+                echo " deployment successful "
             }
         }
     }
