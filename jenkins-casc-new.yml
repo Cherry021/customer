@@ -1,0 +1,16 @@
+jobs:
+  - script: >
+    pipelineJob('my_main_pipleline_build') {
+        definition {
+            cpsScm {
+                scriptPath 'Jenkinsfile'
+                scm {
+                  git {
+                      remote { url 'https://github.com/Cherry021/customer.git' 
+                      branch '*/main'
+                      extensions {}
+                  }
+                }
+            }
+        }
+    }

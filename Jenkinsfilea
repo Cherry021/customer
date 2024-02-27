@@ -1,0 +1,40 @@
+pipeline{
+    agent any
+    tools{
+        maven "Maven"
+    }
+    environment{
+        PROJECT_ID = 'storied-cider-394305'
+        CLUSTER_NAME = 'cherryk8s' 
+        LOCATION = 'us-central1-c'
+        CREDENTIALS_ID = 'kubernetes'
+    }
+    stages{
+        stage("Git Checkout new job"){
+            steps{
+                checkout scm
+            }
+        }
+        stage("Build  new job"){
+            steps{
+                sh "mvn clean package"
+            }
+        }
+        stage("Test new job"){
+            steps{
+                sh "mvn test"
+            }
+        }
+        
+        stage("Push Docker Image new job"){
+            steps{
+                echo "docker image pushed"
+            }
+        }
+        stage("Deploy new job"){
+            steps{
+                echo " deployment successful "
+            }
+        }
+    }
+}
